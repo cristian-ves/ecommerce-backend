@@ -11,4 +11,7 @@ public class ItemPurchasedDTO {
     private Integer userId;
     private Integer purchaseId;
     private int quantity;
+    private String name;
+    private String image;
+    private double price;
 }

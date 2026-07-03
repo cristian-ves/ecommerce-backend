@@ -128,8 +128,17 @@ public class PurchaseDAOImpl implements IPurchaseDAO {
 
             CartItem.CartItemId cartItemId = new CartItem.CartItemId(userId, item.getId());
             cartItemDAOImpl.findById(cartItemId).ifPresent(cartItemDAOImpl::delete);
-            
-            purchasedItems.add(new ItemPurchasedDTO(item.getId(), userId, purchase.getId(), ci.getQuantity()));
+
+            purchasedItems.add(ItemPurchasedDTO.builder()
+                    .itemId(item.getId())
+                    .userId(userId)
+                    .purchaseId(purchase.getId())
+                    .quantity(ci.getQuantity())
+                    .name(item.getName())
+                    .image(item.getImage())
+                    .price(item.getPrice())
+                    .build()
+            );
         }
 
         return PurchaseDTO.builder()
@@ -150,7 +159,16 @@ public class PurchaseDAOImpl implements IPurchaseDAO {
         return purchaseRepository.findByUser_Id(userId).stream().map(p -> {
             List<ItemPurchasedDTO> items = itemPurchasedRepository.findByPurchase(p)
                     .stream()
-                    .map(ip -> new ItemPurchasedDTO(ip.getItem().getId(), userId, p.getId(), ip.getQuantity()))
+                    .map(ip -> ItemPurchasedDTO.builder()
+                            .itemId(ip.getItem().getId())
+                            .userId(userId)
+                            .purchaseId(p.getId())
+                            .quantity(ip.getQuantity())
+                            .name(ip.getItem().getName())
+                            .image(ip.getItem().getImage())
+                            .price(ip.getItem().getPrice())
+                            .build()
+                    )
                     .collect(Collectors.toList());
 
             return PurchaseDTO.builder()
@@ -160,6 +178,7 @@ public class PurchaseDAOImpl implements IPurchaseDAO {
                     .delivered(p.getDelivered())
                     .createdAt(p.getCreatedAt())
                     .deliveryDate(p.getDeliveryDate())
+                    .total(p.getTotal())
                     .items(items)
                     .build();
         }).collect(Collectors.toList());
@@ -170,7 +189,16 @@ public class PurchaseDAOImpl implements IPurchaseDAO {
         return purchaseRepository.findAll().stream().map(p -> {
             List<ItemPurchasedDTO> items = itemPurchasedRepository.findByPurchase(p)
                     .stream()
-                    .map(ip -> new ItemPurchasedDTO(ip.getItem().getId(), ip.getUser().getId(), p.getId(), ip.getQuantity()))
+                    .map(ip -> ItemPurchasedDTO.builder()
+                            .itemId(ip.getItem().getId())
+                            .userId(ip.getUser().getId())
+                            .purchaseId(p.getId())
+                            .quantity(ip.getQuantity())
+                            .name(ip.getItem().getName())
+                            .image(ip.getItem().getImage())
+                            .price(ip.getItem().getPrice())
+                            .build()
+                    )
                     .collect(Collectors.toList());
 
             return PurchaseDTO.builder()
@@ -213,12 +241,16 @@ public class PurchaseDAOImpl implements IPurchaseDAO {
 
         List<ItemPurchasedDTO> items = itemPurchasedRepository.findByPurchase(purchase)
                 .stream()
-                .map(ip -> new ItemPurchasedDTO(
-                        ip.getItem().getId(),
-                        ip.getUser().getId(),
-                        purchase.getId(),
-                        ip.getQuantity()
-                ))
+                .map(ip -> ItemPurchasedDTO.builder()
+                        .itemId(ip.getItem().getId())
+                        .userId(ip.getUser().getId())
+                        .purchaseId(purchase.getId())
+                        .quantity(ip.getQuantity())
+                        .name(ip.getItem().getName())
+                        .image(ip.getItem().getImage())
+                        .price(ip.getItem().getPrice())
+                        .build()
+                )
                 .toList();
 
         PurchaseDTO updated = PurchaseDTO.builder()

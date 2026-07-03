@@ -34,6 +34,11 @@ public class AuthController {
         }
 
         User user = userOpt.get();
+
+        if (user.getSuspended()) {
+            return ResponseEntity.status(403).body("Account is suspended. Please contact support.");
+        }
+
         if (!user.getPassword().equals(loginRequest.getPassword())) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
@@ -88,6 +93,11 @@ public class AuthController {
             return ResponseEntity.status(404).body("User not found");
         }
 
+        User user = userOpt.get();
+        if(user.getSuspended()) {
+            return ResponseEntity.status(403).body("Session terminated: Account has been suspended.");
+        }
+
         UserDTO userDTO = mapToDTO(userOpt.get());
         return ResponseEntity.ok(new AuthResponseDTO(null, userDTO));
     }
@@ -99,7 +109,7 @@ public class AuthController {
     }
 
     @PostMapping("/toggleBan/{id}")
-    public void toggleBan(@PathVariable int id) {
+    public void toggleBan(@PathVariable int id) throws InterruptedException {
          userService.toggleBan(id);
     }
 
