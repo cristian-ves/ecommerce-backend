@@ -21,4 +21,5 @@ public interface IItemService {
     void acceptItem(int id);
     void rejectItem(int id);
     List<TopClientProductsDTO> getTopClientsByProducts();
+    List<Item> searchAndFilter(String query, List<Integer> categoryIds);
 }

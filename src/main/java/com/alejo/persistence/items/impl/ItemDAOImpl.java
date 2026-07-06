@@ -7,6 +7,7 @@ import com.alejo.entities.items.Category;
 import com.alejo.entities.items.Item;
 import com.alejo.persistence.items.IItemDAO;
 import com.alejo.repository.items.ItemRepository;
+import com.alejo.repository.items.ItemSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -129,6 +130,11 @@ public class ItemDAOImpl implements IItemDAO {
                     return new TopClientProductsDTO(user.getId(), user.getName(), total.intValue());
                 })
                 .toList();
+    }
+
+    @Override
+    public List<Item> searchAndFilter(String query, List<Integer> categoryIds) {
+        return itemRepository.findAll(ItemSpecifications.search(query, categoryIds));
     }
 
 }

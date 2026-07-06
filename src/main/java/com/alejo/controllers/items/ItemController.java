@@ -37,14 +37,6 @@ public class ItemController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/search")
-    public List<ItemDTO> searchItems(@RequestParam("q") String query) {
-        return itemService.searchItems(query)
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
-
     @GetMapping("/filter")
     public List<ItemDTO> filterItemsByCategory(@RequestParam List<Integer> categories) {
         List<Item> items = itemService.findByCategories(categories);
@@ -127,6 +119,17 @@ public class ItemController {
     public ResponseEntity<List<TopClientProductsDTO>> getTopClientsByItems() {
         List<TopClientProductsDTO> report = itemService.getTopClientsByProducts();
         return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/search")
+    public List<ItemDTO> searchItems(
+            @RequestParam(value = "q", required = false) String query,
+            @RequestParam(value = "categories", required = false) List<Integer> categories
+    ) {
+        return itemService.searchAndFilter(query, categories)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     private ItemRequestDTO mapToRequestDTO(Item item) {

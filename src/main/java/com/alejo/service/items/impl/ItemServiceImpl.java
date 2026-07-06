@@ -30,6 +30,11 @@ public class ItemServiceImpl implements IItemService {
     }
 
     @Override
+    public List<Item> searchAndFilter(String query, List<Integer> categoryIds) {
+        return itemDAO.searchAndFilter(query, categoryIds);
+    }
+
+    @Override
     public List<Item> searchItems(String query) {
         return itemDAO.search(query);
     }

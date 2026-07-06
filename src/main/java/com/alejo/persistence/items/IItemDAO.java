@@ -20,5 +20,6 @@ public interface IItemDAO {
     void acceptItemRequest(int id);
     void rejectItemRequest(int id);
     List<TopClientProductsDTO> findTopClientsByItems();
+    List<Item> searchAndFilter(String query, List<Integer> categoryIds);
 
 }
