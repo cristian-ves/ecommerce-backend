@@ -25,6 +25,11 @@ public class AuthController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         Optional<User> userOpt = userService.findByEmail(loginRequest.getEmail());
